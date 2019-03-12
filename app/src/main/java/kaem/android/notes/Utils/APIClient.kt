@@ -1,13 +1,7 @@
 package kaem.android.notes.Utils
 
-import android.util.Log
 import okhttp3.*
-import java.io.IOException
-import java.lang.Exception
-import android.R.string
-import android.os.AsyncTask.execute
-
-
+import org.jsoup.Jsoup
 
 class APIClient {
 
@@ -16,14 +10,28 @@ class APIClient {
         private val apiAdress = "http://ibibles.net/quote.php?lsg-"
 
         fun getVerse(book: String, chapter: Int, startVerse: Int, endVerse: Int?) : String? {
+            var url : String
+            if (endVerse == null) {
+                url = "$apiAdress$book/$chapter:$startVerse"
+            } else {
+                url = "$apiAdress$book/$chapter:$startVerse-$endVerse"
+            }
 
             val request = Request.Builder()
-                //.url("$apiAdress-$book/$chapter:$startVerse")
-                .url("http://ibibles.net/quote.php?lsg-gen/1:1")
+                .url(url)
                 .build()
 
-            client.newCall(request).execute().use { response -> return response.body()?.string() }
+            client.newCall(request).execute().use { response ->
+                val html = response.body()?.string()
+                val doc = Jsoup.parse(html)
+                val body = doc.select("body").html()
 
+                var verse = body.toString()
+                    .replace("<br>", "")
+                    .replace("<small>","")
+                    .replace("</small>"," ")
+                return verse
+            }
         }
     }
 }
