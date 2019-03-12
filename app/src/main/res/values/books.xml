@@ -1,7 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="planets_array">
-        <item>gen</item>
+    <string-array name="books_array">
+        <item>ge</item>
         <item>exo</item>
+        <item>lev</item>
+        <item>num</item>
+        <item>deu</item>
+        <item>josh</item>
+        <item>jdgs</item>
+        <item>ruth</item>
+        <item>1sm</item>
+        <item>2sm</item>
+        <item>1ki</item>
+        <item>2ki</item>
+        <item>1chr</item>
+        <item>2chr</item>
+        <item>ezra</item>
+        <item>neh</item>
+        <item>est</item>
+        <item>job</item>
+        <item>psa</item>
+        <item>prv</item>
+        <item>eccl</item>
+        <item>ssol</item>
+        <item>isa</item>
+        <item>jer</item>
+        <item>lam</item>
+        <item>eze</item>
+        <item>dan</item>
+        <item>hos</item>
+        <item>joel</item>
+        <item>amos</item>
+        <item>obad</item>
+        <item>jonah</item>
+        <item>mic</item>
+        <item>nahum</item>
+        <item>hab</item>
+        <item>zep</item>
+        <item>hag</item>
+        <item>zep</item>
+        <item>mal</item>
+        <item>mat</item>
+        <item>mark</item>
+        <item>luke</item>
+        <item>john</item>
+        <item>acts</item>
+        <item>rom</item>
+        <item>1cor</item>
+        <item>2cor</item>
+        <item>gal</item>
+        <item>eph</item>
+        <item>phi</item>
+        <item>col</item>
+        <item>1th</item>
+        <item>2th</item>
+        <item>1tim</item>
+        <item>2tim</item>
+        <item>titus</item>
+        <item>phmn</item>
+        <item>heb</item>
+        <item>jas</item>
+        <item>1pet</item>
+        <item>2pet</item>
+        <item>1jn</item>
+        <item>2jn</item>
+        <item>3jn</item>
+        <item>jude</item>
+        <item>rev</item>
     </string-array>
 </resources>

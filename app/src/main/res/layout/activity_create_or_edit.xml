@@ -48,7 +48,7 @@
                 android:id="@+id/editTextChapter"
                 android:inputType="number"
                 android:maxLength="3"
-                android:hint="1"/>
+                android:text="1"/>
         <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
@@ -60,7 +60,7 @@
                 android:id="@+id/editTextStartVerse"
                 android:inputType="number"
                 android:maxLength="3"
-                android:hint="1"/>
+                android:text="1"/>
         <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
@@ -88,6 +88,7 @@
             android:layout_height="0dp"
             android:gravity="top"
             android:hint="Note"
+            android:id="@+id/editTextNote"
             app:layout_constraintTop_toBottomOf="@+id/verseLayout"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
