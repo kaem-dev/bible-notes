@@ -1,16 +1,15 @@
 package kaem.android.notes.UI
 
-import android.annotation.SuppressLint
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
-import android.support.annotation.IntegerRes
-import android.text.*
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import kaem.android.notes.Model.Note
 import kaem.android.notes.R
 import kaem.android.notes.Utils.APIClient
+import kotlinx.android.synthetic.main.activity_create_or_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,10 +21,13 @@ class CreateOrEditActivity : AppCompatActivity() {
     lateinit var startVerseEditText: EditText
     lateinit var endVerseEditText: EditText
     lateinit var noteEditText: EditText
+    lateinit var booksValues : Array<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
+
+        booksValues = resources.getStringArray(R.array.books_values_array)
 
         initViews()
     }
@@ -38,7 +40,8 @@ class CreateOrEditActivity : AppCompatActivity() {
                 }
                 return@Thread
             }
-            val book = bookSpinner.selectedItem as String
+
+            val book = booksValues[bookSpinner.selectedItemPosition]
             val chapter = Integer.valueOf(chapterEditText.text.toString())
             val startVerse = Integer.valueOf(startVerseEditText.text.toString())
             var endVerse : Int?
@@ -50,6 +53,7 @@ class CreateOrEditActivity : AppCompatActivity() {
             val verse = APIClient.getVerse(book, chapter, startVerse, endVerse)
 
             runOnUiThread {
+                hideKeyboard()
                 if(verse!!.contains("Bible verse not found."))
                     Toast.makeText(applicationContext, "Le verset n'existe pas", Toast.LENGTH_SHORT).show()
                 else
@@ -68,6 +72,18 @@ class CreateOrEditActivity : AppCompatActivity() {
             isOk = false
 
         return isOk
+    }
+
+    fun saveNote() {
+        val note = Note(editTextTitle.text.toString(), editTextDate.text.toString(), editTextNote.text.toString())
+    }
+
+    private fun hideKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
     private fun initViews(){
