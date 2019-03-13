@@ -45,19 +45,23 @@ class CreateOrEditActivity : AppCompatActivity() {
             val chapter = Integer.valueOf(chapterEditText.text.toString())
             val startVerse = Integer.valueOf(startVerseEditText.text.toString())
             var endVerse : Int?
+            var ref : String
             if (endVerseEditText.text.isEmpty()) {
                 endVerse = null
+                ref = "${bookSpinner.selectedItem} $chapter:$startVerse"
             } else {
                 endVerse = Integer.valueOf(endVerseEditText.text.toString())
+                ref = "${bookSpinner.selectedItem} $chapter:$startVerse-$endVerse"
             }
             val verse = APIClient.getVerse(book, chapter, startVerse, endVerse)
 
             runOnUiThread {
                 hideKeyboard()
-                if(verse!!.contains("Bible verse not found."))
+                if(verse!!.contains("Bible verse not found.")) {
                     Toast.makeText(applicationContext, "Le verset n'existe pas", Toast.LENGTH_SHORT).show()
-                else
-                    noteEditText.setText("${noteEditText.text} \n $verse", TextView.BufferType.EDITABLE)
+                } else {
+                    noteEditText.setText("${noteEditText.text} \n\n$ref\n$verse", TextView.BufferType.EDITABLE)
+                }
             }
         }.start()
     }

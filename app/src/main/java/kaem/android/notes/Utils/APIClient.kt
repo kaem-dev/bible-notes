@@ -1,5 +1,6 @@
 package kaem.android.notes.Utils
 
+import android.util.Log
 import okhttp3.*
 import org.jsoup.Jsoup
 
@@ -27,9 +28,14 @@ class APIClient {
                 val body = doc.select("body").html()
 
                 var verse = body.toString()
+                    .replace("<br> ", "")
                     .replace("<br>", "")
+                    .replace(" <small>","")
                     .replace("<small>","")
                     .replace("</small>"," ")
+                    .replace("\n\n", "\n")
+                    .trim()
+
                 return verse
             }
         }
