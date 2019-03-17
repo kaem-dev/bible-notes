@@ -79,7 +79,10 @@ class CreateOrEditActivity : AppCompatActivity() {
     }
 
     fun saveNote() {
-        val note = Note(editTextTitle.text.toString(), editTextDate.text.toString(), editTextNote.text.toString())
+        val note = Note()
+        note.title = editTextTitle.text.toString()
+        note.date = editTextDate.text.toString()
+        note.content = editTextNote.text.toString()
     }
 
     private fun hideKeyboard() {
