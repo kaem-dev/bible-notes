@@ -1,4 +1,4 @@
-package kaem.android.notes.UI
+package kaem.android.notes.ui
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity

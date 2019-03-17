@@ -1,6 +1,5 @@
-package kaem.android.notes.Utils
+package kaem.android.notes.utils
 
-import android.util.Log
 import okhttp3.*
 import org.jsoup.Jsoup
 

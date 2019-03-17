@@ -1,4 +1,4 @@
-package kaem.android.notes.UI
+package kaem.android.notes.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import kaem.android.notes.Model.Note
+import kaem.android.notes.model.Note
 import kaem.android.notes.R
-import kaem.android.notes.Utils.APIClient
+import kaem.android.notes.utils.APIClient
 import kotlinx.android.synthetic.main.activity_create_or_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
