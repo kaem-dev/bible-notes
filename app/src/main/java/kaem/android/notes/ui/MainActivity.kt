@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -24,13 +25,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         dbHandler = NotesDataBaseHelper(this)
 
-        //noteList = dbHandler!!.getAllNotes()
-
-        noteList = arrayListOf()
-        noteList.add(Note(1, "Test", "Aujourd'hui", "Test"))
-        noteList.add(Note(1, "Test 2", "Hier", "Test 2"))
-        noteList.add(Note(1, "Test 3", "Demain", "Test 3"))
-        noteList.add(Note(1, "Test 4", "Le 4", "Test 4"))
+        noteList = dbHandler!!.getAllNotes()
 
         adapter = NotesAdapter(noteList, this)
         val recyclerView = findViewById<RecyclerView>(R.id.notes_recycler_view)
@@ -38,11 +33,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.adapter = adapter
 
         findViewById<FloatingActionButton>(R.id.create_note_button).setOnClickListener(this)
-    }
-
-    fun addNote() {
-        val intent = Intent(this, CreateOrEditActivity::class.java)
-        startActivity(intent)
     }
 
     override fun onClick(v: View?) {
@@ -53,5 +43,43 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 R.id.create_note_button -> addNote()
             }
         }
+    }
+
+    private fun addNote() {
+        val intent = Intent(this, CreateOrEditActivity::class.java)
+        startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode != CreateOrEditActivity.REQUEST_EDIT_NOTE || data == null){
+            return
+        }
+        when(resultCode){
+            CreateOrEditActivity.SAVE_CODE -> {
+                var note = data.getParcelableExtra<Note>(CreateOrEditActivity.EXTRA_NOTE)
+                var index  = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
+                if(checkValues(note)){
+                    if(index < 0)
+                        noteList.add(note)
+                    else
+                        noteList[index] = note
+                    adapter.notifyDataSetChanged()
+                    dbHandler?.addNote(note)
+                }
+            }
+            CreateOrEditActivity.DELETE_CODE ->{
+                var index = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
+                if(index >= 0){
+                    var note = noteList.removeAt(index)
+                    dbHandler?.deleteNote(note)
+                    Toast.makeText(this,  "La note à bien été supprimée", Toast.LENGTH_SHORT).show()
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    private fun checkValues(note: Note) : Boolean{
+        return note.title.trim().isBlank()
     }
 }

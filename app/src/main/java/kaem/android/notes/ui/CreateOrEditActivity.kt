@@ -23,6 +23,14 @@ class CreateOrEditActivity : AppCompatActivity() {
     lateinit var noteEditText: EditText
     lateinit var booksValues : Array<String>
 
+    companion object {
+        const val REQUEST_EDIT_NOTE = 0
+        const val SAVE_CODE = 1
+        const val DELETE_CODE = 2
+        const val EXTRA_NOTE  = "note"
+        const val EXTRA_INDEX = "index"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
