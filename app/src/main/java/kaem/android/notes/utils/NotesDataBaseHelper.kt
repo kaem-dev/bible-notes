@@ -39,9 +39,8 @@ class NotesDataBaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,
             values.put(ENTITLE, note.title)
             values.put(DATE, note.date)
             values.put(CONTENT, note.content)
-            if (note.id > 0) {
-                values.put(KEY_NOTE_ID, note.id)
-            }
+            values.put(KEY_NOTE_ID, note.id)
+            Log.i("TEST_UPDATE", "addNote id :"+note.id)
 
             db.insertOrThrow(TABLE_NOTE, null, values)
             db.setTransactionSuccessful()
@@ -78,18 +77,20 @@ class NotesDataBaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,
                 cursor.close()
             }
         }
+        Log.i("TEST_UPDATE", "Liste DB :"+notes)
         return notes
     }
 
-    fun updateNote(note: Note, id: Int): Int {
+    fun updateNote(note: Note): Int {
         val db = this.writableDatabase
 
         val values = ContentValues()
+        values.put(KEY_NOTE_ID, note.id)
         values.put(ENTITLE, note.title)
         values.put(DATE, note.date)
         values.put(CONTENT, note.content)
 
-        return db.update(TABLE_NOTE, values, "$KEY_NOTE_ID = ?", arrayOf(id.toString()))
+        return db.update(TABLE_NOTE, values, "$KEY_NOTE_ID = ?", arrayOf(note.id.toString()))
     }
 
     fun deleteNote(note: Note) {

@@ -1,27 +1,35 @@
 package kaem.android.notes.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
+import android.text.Editable
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import kaem.android.notes.model.Note
 import kaem.android.notes.R
 import kaem.android.notes.utils.APIClient
-import kotlinx.android.synthetic.main.activity_create_or_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CreateOrEditActivity : AppCompatActivity() {
-    lateinit var titleEditText: EditText
-    lateinit var dateTextView: TextView
-    lateinit var bookSpinner: Spinner
-    lateinit var chapterEditText: EditText
-    lateinit var startVerseEditText: EditText
-    lateinit var endVerseEditText: EditText
-    lateinit var noteEditText: EditText
-    lateinit var booksValues : Array<String>
+    private var noteIndex : Int = -1
+    private lateinit var noteExtra : Note
+    private lateinit var titleEditText: EditText
+    private lateinit var dateTextView: TextView
+    private lateinit var bookSpinner: Spinner
+    private lateinit var chapterEditText: EditText
+    private lateinit var startVerseEditText: EditText
+    private lateinit var endVerseEditText: EditText
+    private lateinit var contentEditText: EditText
+    private lateinit var booksValues : Array<String>
 
     companion object {
         const val REQUEST_EDIT_NOTE = 0
@@ -35,9 +43,43 @@ class CreateOrEditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_or_edit)
 
-        booksValues = resources.getStringArray(R.array.books_values_array)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         initViews()
+
+        booksValues = resources.getStringArray(R.array.books_values_array)
+
+        if (intent.hasExtra(EXTRA_NOTE)){
+            noteIndex = intent.getIntExtra(EXTRA_INDEX, -1)
+            noteExtra = intent.getParcelableExtra(EXTRA_NOTE)
+            initNote(noteExtra)
+        }
+    }
+
+    override fun onBackPressed() {
+        saveNote()
+        super.onBackPressed()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_create_or_edit, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.delete_note -> {
+                deleteNote()
+                return true
+            }
+        }
+        return  super.onOptionsItemSelected(item)
     }
 
     fun getVerseButton(v : View){
@@ -68,7 +110,7 @@ class CreateOrEditActivity : AppCompatActivity() {
                 if(verse!!.contains("Bible verse not found.")) {
                     Toast.makeText(applicationContext, "Le verset n'existe pas", Toast.LENGTH_SHORT).show()
                 } else {
-                    noteEditText.setText("${noteEditText.text} \n\n$ref\n$verse", TextView.BufferType.EDITABLE)
+                    contentEditText.setText("${contentEditText.text} \n\n$ref\n$verse", TextView.BufferType.EDITABLE)
                 }
             }
         }.start()
@@ -86,11 +128,39 @@ class CreateOrEditActivity : AppCompatActivity() {
         return isOk
     }
 
-    fun saveNote() {
+    private fun saveNote() {
         val note = Note()
-        note.title = editTextTitle.text.toString()
-        note.date = editTextDate.text.toString()
-        note.content = editTextNote.text.toString()
+        note.id = noteIndex
+        note.title = titleEditText.text.toString()
+        note.date = dateTextView.text.toString()
+        note.content = contentEditText.text.toString()
+
+        intent = Intent()
+        intent.putExtra(EXTRA_NOTE, note as Parcelable)
+        intent.putExtra(EXTRA_INDEX, noteIndex)
+        setResult(SAVE_CODE, intent)
+        finish()
+    }
+
+    private fun deleteNote(){
+        val builder = AlertDialog.Builder(this)
+
+        builder.setMessage("Voulez-vous vraiment supprimer cette note ?")
+
+        builder.setPositiveButton("Oui"){ _, _ ->
+            intent = Intent()
+            intent.putExtra(EXTRA_INDEX,noteIndex)
+            setResult(DELETE_CODE, intent)
+            finish()
+        }
+
+        builder.setNegativeButton("Non"){_,_ ->
+        }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
+
     }
 
     private fun hideKeyboard() {
@@ -99,6 +169,12 @@ class CreateOrEditActivity : AppCompatActivity() {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    private fun initNote(note : Note){
+        titleEditText.setText(note.title, TextView.BufferType.EDITABLE)
+        dateTextView.text = note.date
+        contentEditText.setText(note.content, TextView.BufferType.EDITABLE)
     }
 
     private fun initViews(){
@@ -123,6 +199,6 @@ class CreateOrEditActivity : AppCompatActivity() {
         chapterEditText = findViewById(R.id.editTextChapter)
         startVerseEditText = findViewById(R.id.editTextStartVerse)
         endVerseEditText = findViewById(R.id.editTextEndVerse)
-        noteEditText = findViewById(R.id.editTextNote)
+        contentEditText = findViewById(R.id.editTextNote)
     }
 }

@@ -1,5 +1,6 @@
 package kaem.android.notes.ui
 
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kaem.android.notes.R
@@ -37,12 +39,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v?.tag != null) {
-            Toast.makeText(this, (v.tag as Note).title, Toast.LENGTH_SHORT).show()
+            editNote(v.tag as Int)
         } else {
             when (v?.id) {
                 R.id.create_note_button -> addNote()
             }
         }
+    }
+
+    private fun editNote(index : Int) {
+        val intent = Intent(this, CreateOrEditActivity::class.java)
+        intent.putExtra(CreateOrEditActivity.EXTRA_NOTE, noteList[index])
+        intent.putExtra(CreateOrEditActivity.EXTRA_INDEX, index)
+        startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
     }
 
     private fun addNote() {
@@ -59,12 +68,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 var note = data.getParcelableExtra<Note>(CreateOrEditActivity.EXTRA_NOTE)
                 var index  = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
                 if(checkValues(note)){
-                    if(index < 0)
+                    if(index < 0) {
+                        Log.i("TEST_UPDATE", "last index : " + noteList.lastIndex )
+                        Log.i("TEST_UPDATE", "id : " + (noteList.lastIndex + 1))
+                        note.id = noteList.lastIndex + 1
                         noteList.add(note)
-                    else
+                        dbHandler?.addNote(note)
+                    } else {
+                        Log.i("TEST_UPDATE", note.id.toString())
                         noteList[index] = note
+                        dbHandler?.updateNote(note)
+                    }
                     adapter.notifyDataSetChanged()
-                    dbHandler?.addNote(note)
                 }
             }
             CreateOrEditActivity.DELETE_CODE ->{
@@ -80,6 +95,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun checkValues(note: Note) : Boolean{
-        return note.title.trim().isBlank()
+        return !note.title.trim().isBlank()
     }
 }

@@ -7,11 +7,23 @@
         android:layout_height="match_parent"
         tools:context=".ui.CreateOrEditActivity">
 
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:title="Nouvelle note"
+            android:elevation="5dp"
+            app:theme="@style/ToolbarTheme"
+            app:titleTextColor="@color/colorAccent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Titre" android:layout_marginTop="16dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
