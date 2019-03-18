@@ -21,6 +21,7 @@ import java.util.*
 
 class CreateOrEditActivity : AppCompatActivity() {
     private var noteIndex : Int = -1
+    private var noteId : Int? = null
     private lateinit var noteExtra : Note
     private lateinit var titleEditText: EditText
     private lateinit var dateTextView: TextView
@@ -52,8 +53,10 @@ class CreateOrEditActivity : AppCompatActivity() {
         booksValues = resources.getStringArray(R.array.books_values_array)
 
         if (intent.hasExtra(EXTRA_NOTE)){
+            supportActionBar!!.title = getString(R.string.editNoteToolbarTitle)
             noteIndex = intent.getIntExtra(EXTRA_INDEX, -1)
             noteExtra = intent.getParcelableExtra(EXTRA_NOTE)
+            noteId = noteExtra.id
             initNote(noteExtra)
         }
     }
@@ -86,7 +89,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         Thread {
             if(!checkValidParams()){
                 runOnUiThread {
-                    Toast.makeText(applicationContext, "La saisie n'est pas valide", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.wrongVerseParams), Toast.LENGTH_SHORT).show()
                 }
                 return@Thread
             }
@@ -108,7 +111,7 @@ class CreateOrEditActivity : AppCompatActivity() {
             runOnUiThread {
                 hideKeyboard()
                 if(verse!!.contains("Bible verse not found.")) {
-                    Toast.makeText(applicationContext, "Le verset n'existe pas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.verseNotFound), Toast.LENGTH_SHORT).show()
                 } else {
                     contentEditText.setText("${contentEditText.text} \n\n$ref\n$verse", TextView.BufferType.EDITABLE)
                 }
@@ -130,7 +133,9 @@ class CreateOrEditActivity : AppCompatActivity() {
 
     private fun saveNote() {
         val note = Note()
-        note.id = noteIndex
+        if (noteId != null) {
+            note.id = noteId!!
+        }
         note.title = titleEditText.text.toString()
         note.date = dateTextView.text.toString()
         note.content = contentEditText.text.toString()
@@ -145,16 +150,16 @@ class CreateOrEditActivity : AppCompatActivity() {
     private fun deleteNote(){
         val builder = AlertDialog.Builder(this)
 
-        builder.setMessage("Voulez-vous vraiment supprimer cette note ?")
+        builder.setMessage(getString(R.string.deleteNoteValidation))
 
-        builder.setPositiveButton("Oui"){ _, _ ->
+        builder.setPositiveButton(getString(R.string.yes)){ _, _ ->
             intent = Intent()
             intent.putExtra(EXTRA_INDEX,noteIndex)
             setResult(DELETE_CODE, intent)
             finish()
         }
 
-        builder.setNegativeButton("Non"){_,_ ->
+        builder.setNegativeButton(getString(R.string.no)){ _, _ ->
         }
 
         val dialog: AlertDialog = builder.create()

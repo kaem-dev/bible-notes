@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="editNoteToolbarTitle">Modifier la note</string>
+    <string name="wrongVerseParams">La saisie n\'est pas valide</string>
+    <string name="verseNotFound">Le verset n\'existe pas</string>
+    <string name="deleteNoteValidation">Voulez-vous vraiment supprimer cette note ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="noteDeleted">La note à bien été supprimée</string>
 </resources>

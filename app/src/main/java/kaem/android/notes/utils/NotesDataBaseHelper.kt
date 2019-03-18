@@ -40,7 +40,6 @@ class NotesDataBaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,
             values.put(DATE, note.date)
             values.put(CONTENT, note.content)
             values.put(KEY_NOTE_ID, note.id)
-            Log.i("TEST_UPDATE", "addNote id :"+note.id)
 
             db.insertOrThrow(TABLE_NOTE, null, values)
             db.setTransactionSuccessful()
@@ -77,7 +76,6 @@ class NotesDataBaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,
                 cursor.close()
             }
         }
-        Log.i("TEST_UPDATE", "Liste DB :"+notes)
         return notes
     }
 

@@ -69,13 +69,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 var index  = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
                 if(checkValues(note)){
                     if(index < 0) {
-                        Log.i("TEST_UPDATE", "last index : " + noteList.lastIndex )
-                        Log.i("TEST_UPDATE", "id : " + (noteList.lastIndex + 1))
-                        note.id = noteList.lastIndex + 1
+                        note.id = getNewId()
                         noteList.add(note)
                         dbHandler?.addNote(note)
                     } else {
-                        Log.i("TEST_UPDATE", note.id.toString())
                         noteList[index] = note
                         dbHandler?.updateNote(note)
                     }
@@ -87,7 +84,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if(index >= 0){
                     var note = noteList.removeAt(index)
                     dbHandler?.deleteNote(note)
-                    Toast.makeText(this,  "La note à bien été supprimée", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,  getString(R.string.noteDeleted), Toast.LENGTH_SHORT).show()
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -96,5 +93,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun checkValues(note: Note) : Boolean{
         return !note.title.trim().isBlank()
+    }
+
+    private fun getNewId() : Int {
+        return if(noteList.size == 0)
+            1
+        else
+            noteList.last().id + 1
     }
 }
