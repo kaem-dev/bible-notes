@@ -7,7 +7,6 @@ import android.os.Parcelable
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -48,7 +47,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        initViews()
+        initViewObjects()
 
         booksValues = resources.getStringArray(R.array.books_values_array)
 
@@ -182,7 +181,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         contentEditText.setText(note.content, TextView.BufferType.EDITABLE)
     }
 
-    private fun initViews(){
+    private fun initViewObjects(){
         titleEditText = findViewById(R.id.editTextTitle)
 
         dateTextView = findViewById(R.id.editTextDate)

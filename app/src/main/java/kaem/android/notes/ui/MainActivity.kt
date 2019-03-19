@@ -1,14 +1,11 @@
 package kaem.android.notes.ui
 
-import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kaem.android.notes.R
@@ -39,12 +36,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v?.tag != null) {
-            editNote(v.tag as Int)
+            openNote(v.tag as Int)
         } else {
             when (v?.id) {
                 R.id.create_note_button -> addNote()
             }
         }
+    }
+
+    private fun openNote(index: Int) {
+        val intent = Intent(this, NoteActivity::class.java)
+        intent.putExtra(NoteActivity.EXTRA_NOTE, noteList[index])
+        startActivityForResult(intent, NoteActivity.REQUEST_NOTE)
     }
 
     private fun editNote(index : Int) {
@@ -60,7 +63,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode != CreateOrEditActivity.REQUEST_EDIT_NOTE || data == null){
+        if (requestCode != CreateOrEditActivity.REQUEST_EDIT_NOTE ||
+            requestCode != NoteActivity.REQUEST_NOTE ||
+            data == null){
             return
         }
         when(resultCode){
