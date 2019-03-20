@@ -91,12 +91,12 @@ class NotesDataBaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME,
         return db.update(TABLE_NOTE, values, "$KEY_NOTE_ID = ?", arrayOf(note.id.toString()))
     }
 
-    fun deleteNote(note: Note) {
+    fun deleteNote(id : Int) {
         val db = writableDatabase
         db.beginTransaction()
 
         val clause = "$KEY_NOTE_ID = ?"
-        val clauseArgs = arrayOf(note.id.toString())
+        val clauseArgs = arrayOf(id.toString())
         try {
             db.delete(TABLE_NOTE, clause, clauseArgs)
             db.setTransactionSuccessful()

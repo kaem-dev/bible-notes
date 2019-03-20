@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CreateOrEditActivity : AppCompatActivity() {
-    private var noteIndex : Int = -1
     private var noteId : Int? = null
     private lateinit var noteExtra : Note
     private lateinit var titleEditText: EditText
@@ -36,7 +35,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         const val SAVE_CODE = 1
         const val DELETE_CODE = 2
         const val EXTRA_NOTE  = "note"
-        const val EXTRA_INDEX = "index"
+        const val EXTRA_ID = "id"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +52,6 @@ class CreateOrEditActivity : AppCompatActivity() {
 
         if (intent.hasExtra(EXTRA_NOTE)){
             supportActionBar!!.title = getString(R.string.editNoteToolbarTitle)
-            noteIndex = intent.getIntExtra(EXTRA_INDEX, -1)
             noteExtra = intent.getParcelableExtra(EXTRA_NOTE)
             noteId = noteExtra.id
             initNote(noteExtra)
@@ -96,8 +94,8 @@ class CreateOrEditActivity : AppCompatActivity() {
             val book = booksValues[bookSpinner.selectedItemPosition]
             val chapter = Integer.valueOf(chapterEditText.text.toString())
             val startVerse = Integer.valueOf(startVerseEditText.text.toString())
-            var endVerse : Int?
-            var ref : String
+            val endVerse : Int?
+            val ref : String
             if (endVerseEditText.text.isEmpty()) {
                 endVerse = null
                 ref = "${bookSpinner.selectedItem} $chapter:$startVerse"
@@ -112,7 +110,7 @@ class CreateOrEditActivity : AppCompatActivity() {
                 if(verse!!.contains("Bible verse not found.")) {
                     Toast.makeText(applicationContext, getString(R.string.verseNotFound), Toast.LENGTH_SHORT).show()
                 } else {
-                    contentEditText.setText("${contentEditText.text} \n\n$ref\n$verse", TextView.BufferType.EDITABLE)
+                    contentEditText.setText(getString(R.string.verse, contentEditText.text, ref, verse), TextView.BufferType.EDITABLE)
                 }
             }
         }.start()
@@ -134,6 +132,8 @@ class CreateOrEditActivity : AppCompatActivity() {
         val note = Note()
         if (noteId != null) {
             note.id = noteId!!
+        } else {
+            note.id = -1
         }
         note.title = titleEditText.text.toString()
         note.date = dateTextView.text.toString()
@@ -141,7 +141,6 @@ class CreateOrEditActivity : AppCompatActivity() {
 
         intent = Intent()
         intent.putExtra(EXTRA_NOTE, note as Parcelable)
-        intent.putExtra(EXTRA_INDEX, noteIndex)
         setResult(SAVE_CODE, intent)
         finish()
     }
@@ -153,7 +152,9 @@ class CreateOrEditActivity : AppCompatActivity() {
 
         builder.setPositiveButton(getString(R.string.yes)){ _, _ ->
             intent = Intent()
-            intent.putExtra(EXTRA_INDEX,noteIndex)
+            if (noteId != null) {
+                intent.putExtra(EXTRA_ID, noteId!!)
+            }
             setResult(DELETE_CODE, intent)
             finish()
         }
@@ -164,7 +165,6 @@ class CreateOrEditActivity : AppCompatActivity() {
         val dialog: AlertDialog = builder.create()
 
         dialog.show()
-
     }
 
     private fun hideKeyboard() {
@@ -186,7 +186,7 @@ class CreateOrEditActivity : AppCompatActivity() {
 
         dateTextView = findViewById(R.id.editTextDate)
         val todayDate = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd-MM-yyyy")
+        val formatter = SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE)
         val todayString = formatter.format(todayDate)
         dateTextView.text = todayString
 

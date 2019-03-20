@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kaem.android.notes.R
@@ -14,9 +15,9 @@ import kaem.android.notes.utils.NotesDataBaseHelper
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    var dbHandler: NotesDataBaseHelper? = null
-    lateinit var noteList : MutableList<Note>
-    lateinit var adapter: NotesAdapter
+    private var dbHandler: NotesDataBaseHelper? = null
+    private lateinit var noteList : MutableList<Note>
+    private lateinit var adapter: NotesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,50 +51,49 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         startActivityForResult(intent, NoteActivity.REQUEST_NOTE)
     }
 
-    private fun editNote(index : Int) {
-        val intent = Intent(this, CreateOrEditActivity::class.java)
-        intent.putExtra(CreateOrEditActivity.EXTRA_NOTE, noteList[index])
-        intent.putExtra(CreateOrEditActivity.EXTRA_INDEX, index)
-        startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
-    }
-
     private fun addNote() {
         val intent = Intent(this, CreateOrEditActivity::class.java)
         startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode != CreateOrEditActivity.REQUEST_EDIT_NOTE ||
-            requestCode != NoteActivity.REQUEST_NOTE ||
+        if ((requestCode != CreateOrEditActivity.REQUEST_EDIT_NOTE && requestCode != NoteActivity.REQUEST_NOTE) ||
             data == null){
             return
         }
         when(resultCode){
+            NoteActivity.UPDATE_CODE -> {
+                Log.i("TEST", "ça passe ici")
+                updateList()
+            }
             CreateOrEditActivity.SAVE_CODE -> {
-                var note = data.getParcelableExtra<Note>(CreateOrEditActivity.EXTRA_NOTE)
-                var index  = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
+                val note = data.getParcelableExtra<Note>(CreateOrEditActivity.EXTRA_NOTE)
                 if(checkValues(note)){
-                    if(index < 0) {
+                    if(note.id < 0) {
                         note.id = getNewId()
-                        noteList.add(note)
                         dbHandler?.addNote(note)
+                        updateList()
                     } else {
-                        noteList[index] = note
                         dbHandler?.updateNote(note)
+                        updateList()
                     }
-                    adapter.notifyDataSetChanged()
                 }
             }
             CreateOrEditActivity.DELETE_CODE ->{
-                var index = data.getIntExtra(CreateOrEditActivity.EXTRA_INDEX, -1)
-                if(index >= 0){
-                    var note = noteList.removeAt(index)
-                    dbHandler?.deleteNote(note)
+                val id = data.getIntExtra(CreateOrEditActivity.EXTRA_ID, -1)
+                if(id >= 0){
+                    dbHandler?.deleteNote(id)
                     Toast.makeText(this,  getString(R.string.noteDeleted), Toast.LENGTH_SHORT).show()
-                    adapter.notifyDataSetChanged()
+                    updateList()
                 }
             }
         }
+    }
+
+    private fun updateList() {
+        noteList.clear()
+        noteList.addAll(dbHandler!!.getAllNotes())
+        adapter.notifyDataSetChanged()
     }
 
     private fun checkValues(note: Note) : Boolean{
