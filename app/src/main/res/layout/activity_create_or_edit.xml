@@ -89,10 +89,21 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" >
         </Space>
-        <Button android:layout_width="wrap_content"
+        <ImageButton
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ajouter"
-                android:onClick="getVerseButton"/>
+                android:id="@+id/show_verse_button"
+                android:src="@android:drawable/ic_menu_search"/>
+        <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" >
+        </Space>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_verse_button"
+                android:text="@string/add"/>
     </LinearLayout>
 
     <EditText

@@ -6,10 +6,11 @@
     <string name="editNoteToolbarTitle">Modifier la note</string>
     <string name="no">Non</string>
     <string name="noteDeleted">La note à bien été supprimée</string>
-    <string name="verse">%1$s\n\n%2$s\n%3$s</string>
+    <string name="verse">\n\n%1$s\n%2$s\n\n</string>
     <string name="verseNotFound">Le verset n\'existe pas</string>
     <string name="wrongVerseParams">La saisie n\'est pas valide</string>
     <string name="yes">Oui</string>
     <string name="share">Partager</string>
     <string name="share_with">Partager via</string>
+    <string name="add">Ajouter</string>
 </resources>

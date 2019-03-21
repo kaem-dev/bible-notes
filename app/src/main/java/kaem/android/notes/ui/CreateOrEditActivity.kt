@@ -18,7 +18,7 @@ import kaem.android.notes.utils.APIClient
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CreateOrEditActivity : AppCompatActivity() {
+class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
     private var noteId : Int? = null
     private lateinit var noteExtra : Note
     private lateinit var titleEditText: EditText
@@ -47,6 +47,9 @@ class CreateOrEditActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         initViewObjects()
+
+        findViewById<ImageButton>(R.id.show_verse_button).setOnClickListener(this)
+        findViewById<Button>(R.id.add_verse_button).setOnClickListener(this)
 
         booksValues = resources.getStringArray(R.array.books_values_array)
 
@@ -82,7 +85,7 @@ class CreateOrEditActivity : AppCompatActivity() {
         return  super.onOptionsItemSelected(item)
     }
 
-    fun getVerseButton(v : View){
+    override fun onClick(v: View) {
         Thread {
             if(!checkValidParams()){
                 runOnUiThread {
@@ -106,14 +109,38 @@ class CreateOrEditActivity : AppCompatActivity() {
             val verse = APIClient.getVerse(book, chapter, startVerse, endVerse)
 
             runOnUiThread {
-                hideKeyboard()
                 if(verse!!.contains("Bible verse not found.")) {
                     Toast.makeText(applicationContext, getString(R.string.verseNotFound), Toast.LENGTH_SHORT).show()
                 } else {
-                    contentEditText.setText(getString(R.string.verse, contentEditText.text, ref, verse), TextView.BufferType.EDITABLE)
+                    when (v?.id) {
+                        R.id.show_verse_button -> showVerseButton(ref, verse)
+                        R.id.add_verse_button -> addVerseButton(ref, verse)
+                    }
                 }
             }
         }.start()
+    }
+
+    fun showVerseButton(ref : String, verse : String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(ref)
+        builder.setMessage(verse)
+        builder.setPositiveButton("Ajouter"){ _, _ ->
+            contentEditText.append(getString(R.string.verse, ref, verse))
+            contentEditText.requestFocus()
+            contentEditText.setSelection(contentEditText.text.length)
+        }
+        builder.setNegativeButton(getString(R.string.no)){ _, _ ->
+        }
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
+    }
+
+    fun addVerseButton(ref : String, verse : String){
+        contentEditText.append(getString(R.string.verse, ref, verse))
+        contentEditText.requestFocus()
+        contentEditText.setSelection(contentEditText.text.length)
     }
 
     private fun checkValidParams() : Boolean {
@@ -165,14 +192,6 @@ class CreateOrEditActivity : AppCompatActivity() {
         val dialog: AlertDialog = builder.create()
 
         dialog.show()
-    }
-
-    private fun hideKeyboard() {
-        val view = this.currentFocus
-        if (view != null) {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
-        }
     }
 
     private fun initNote(note : Note){
