@@ -39,72 +39,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/verseLayout"
-            app:layout_constraintTop_toBottomOf="@+id/editTextDate"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-        <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/spinnerBooks"/>
-        <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" >
-        </Space>
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextChapter"
-                android:inputType="number"
-                android:maxLength="3"
-                android:text="1"/>
-        <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" >
-        </Space>
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextStartVerse"
-                android:inputType="number"
-                android:maxLength="3"
-                android:text="1"/>
-        <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" >
-        </Space>
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/editTextEndVerse"
-                android:inputType="number"
-                android:maxLength="3"/>
-        <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" >
-        </Space>
-        <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/show_verse_button"
-                android:src="@android:drawable/ic_menu_search"/>
-        <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" >
-        </Space>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/add_verse_button"
-                android:text="@string/add"/>
-    </LinearLayout>
 
     <EditText
             android:layout_width="match_parent"
@@ -112,11 +46,136 @@
             android:gravity="top"
             android:hint="Note"
             android:id="@+id/editTextNote"
-            app:layout_constraintTop_toBottomOf="@+id/verseLayout"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDate"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/show_add_verse"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/verseLayout"
+            android:visibility="invisible"
+            android:background="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/show_add_verse"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerBooks"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextChapterDesign"
+                app:boxStrokeColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                app:boxBackgroundColor="@color/colorAccent"
+                android:outlineSpotShadowColor="@color/colorAccent"
+                android:outlineAmbientShadowColor="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerBooks">
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextChapter"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:hint="Chapitre"
+                    android:textColor="@color/colorAccent"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextStartVerseDesign"
+                app:boxStrokeColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                app:boxBackgroundColor="@color/colorAccent"
+                android:outlineSpotShadowColor="@color/colorAccent"
+                android:outlineAmbientShadowColor="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextChapterDesign">
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextStartVerse"
+                    android:inputType="number"
+                    android:maxLength="3"
+
+                    android:hint="Verset de départ"
+                    android:textColor="@color/colorAccent"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextEndVerseDesign"
+                app:boxStrokeColor="@color/colorAccent"
+                android:textColorHint="@color/colorAccent"
+                app:boxBackgroundColor="@color/colorAccent"
+                android:outlineSpotShadowColor="@color/colorAccent"
+                android:outlineAmbientShadowColor="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextStartVerseDesign">
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextEndVerse"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:hint="Verset de fin (optionnel)"
+                    android:textColor="@color/colorAccent"
+                    app:layout_constraintTop_toBottomOf="@id/editTextStartVerse"
+                    app:layout_constraintRight_toRightOf="parent"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:id="@+id/show_verse_button"
+                android:text="Voir"
+                android:background="@drawable/round_shape_button"
+                app:layout_constraintTop_toBottomOf="@+id/editTextEndVerseDesign"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"/>
+
+        <Button
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:id="@+id/add_verse_button"
+                android:text="@string/add"
+                android:background="@drawable/round_shape_button"
+                app:layout_constraintTop_toBottomOf="@+id/editTextEndVerseDesign"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:text="Ajouter un verset"
+            android:id="@+id/show_add_verse"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/colorAccent"
+            android:onClick="showVerseLayout"/>
 </android.support.constraint.ConstraintLayout>

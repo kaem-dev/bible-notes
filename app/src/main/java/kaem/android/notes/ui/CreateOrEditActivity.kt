@@ -1,15 +1,18 @@
 package kaem.android.notes.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.TranslateAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import kaem.android.notes.model.Note
@@ -28,6 +31,7 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var startVerseEditText: EditText
     private lateinit var endVerseEditText: EditText
     private lateinit var contentEditText: EditText
+    private lateinit var verseLayout: ConstraintLayout
     private lateinit var booksValues : Array<String>
 
     companion object {
@@ -48,7 +52,7 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
 
         initViewObjects()
 
-        findViewById<ImageButton>(R.id.show_verse_button).setOnClickListener(this)
+        findViewById<Button>(R.id.show_verse_button).setOnClickListener(this)
         findViewById<Button>(R.id.add_verse_button).setOnClickListener(this)
 
         booksValues = resources.getStringArray(R.array.books_values_array)
@@ -62,8 +66,14 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        saveNote()
-        super.onBackPressed()
+        if(verseLayout.visibility == View.VISIBLE) {
+            val animate = TranslateAnimation(0f, 0f, 0f,verseLayout.height.toFloat())
+            animate.duration = 300
+            verseLayout.startAnimation(animate)
+            verseLayout.visibility = View.INVISIBLE
+        } else {
+            saveNote()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -121,7 +131,7 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
         }.start()
     }
 
-    fun showVerseButton(ref : String, verse : String) {
+    private fun showVerseButton(ref : String, verse : String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(ref)
         builder.setMessage(verse)
@@ -137,7 +147,7 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
         dialog.show()
     }
 
-    fun addVerseButton(ref : String, verse : String){
+    private fun addVerseButton(ref : String, verse : String){
         contentEditText.append(getString(R.string.verse, ref, verse))
         contentEditText.requestFocus()
         contentEditText.setSelection(contentEditText.text.length)
@@ -194,6 +204,20 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
         dialog.show()
     }
 
+    fun showVerseLayout(v : View){
+        if(verseLayout.visibility == View.INVISIBLE) {
+            val animate = TranslateAnimation(0f, 0f, verseLayout.height.toFloat(), 0f)
+            animate.duration = 300
+            verseLayout.startAnimation(animate)
+            verseLayout.visibility = View.VISIBLE
+        } else {
+            val animate = TranslateAnimation(0f, 0f, 0f,verseLayout.height.toFloat())
+            animate.duration = 300
+            verseLayout.startAnimation(animate)
+            verseLayout.visibility = View.INVISIBLE
+        }
+    }
+
     private fun initNote(note : Note){
         titleEditText.setText(note.title, TextView.BufferType.EDITABLE)
         dateTextView.text = note.date
@@ -213,7 +237,7 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
         ArrayAdapter.createFromResource(
             this,
             R.array.books_array,
-            android.R.layout.simple_spinner_item
+            R.layout.spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             bookSpinner.adapter = adapter
@@ -223,5 +247,6 @@ class CreateOrEditActivity : AppCompatActivity(), View.OnClickListener {
         startVerseEditText = findViewById(R.id.editTextStartVerse)
         endVerseEditText = findViewById(R.id.editTextEndVerse)
         contentEditText = findViewById(R.id.editTextNote)
+        verseLayout = findViewById<ConstraintLayout>(R.id.verseLayout)
     }
 }
