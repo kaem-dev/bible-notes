@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.adapter = adapter
 
         findViewById<FloatingActionButton>(R.id.create_note_button).setOnClickListener(this)
+        findViewById<FloatingActionButton>(R.id.about_button).setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             when (v?.id) {
                 R.id.create_note_button -> addNote()
+                R.id.about_button -> goToAbout()
             }
         }
     }
@@ -54,6 +56,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun addNote() {
         val intent = Intent(this, CreateOrEditActivity::class.java)
         startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
+    }
+
+    private fun goToAbout(){
+        val intent = Intent(this, AboutActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

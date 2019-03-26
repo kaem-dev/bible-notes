@@ -1,11 +1,13 @@
 <resources>
     <string name="about">À propos</string>
-    <string name="about_content">L\'objectif de YourNote est de permettre de prendre des notes (ex: études, cultes, réflexions, etc) au travers d\'une application qui se veut être la plus simple possible.</string>
+    <string name="about_contact">kaem.devmobile@gmail.com</string>
+    <string name="about_content">L\'objectif de cette application est de permettre de prendre des notes (ex: études, cultes, réflexions, etc) de la manière la plus simple possible.</string>
+    <string name="about_donate">&lt;a style="text-decoration:none;" href=http://paypal.me/kaemdevmobile>Faire un don&lt;/a></string>
+    <string name="about_ref">Cette application a été réalisée avec l\'aide de l\'API &lt;a href=http://lsg.ibibles.net/>ibible.net&lt;/a></string>
     <string name="add">Ajouter</string>
     <string name="app_name">Notes</string>
     <string name="delete">Supprimer</string>
     <string name="deleteNoteValidation">Voulez-vous vraiment supprimer cette note ?</string>
-    <string name="donate_link">Vous pouvez contacter le développeur via cette &lt;a href=www.google.com>adresse email&lt;/a> ou bien le soutenir via ce &lt;a href=www.google.com>lien&lt;/a></string>
     <string name="edit">Modifier</string>
     <string name="editNoteToolbarTitle">Modifier la note</string>
     <string name="no">Non</string>
