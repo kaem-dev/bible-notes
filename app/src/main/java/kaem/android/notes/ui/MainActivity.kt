@@ -3,6 +3,7 @@ package kaem.android.notes.ui
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,7 +14,7 @@ import kaem.android.notes.R
 import kaem.android.notes.model.Note
 import kaem.android.notes.utils.NotesDataBaseHelper
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClickListener {
 
     private var dbHandler: NotesDataBaseHelper? = null
     private lateinit var noteList : MutableList<Note>
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         noteList = dbHandler!!.getAllNotes()
 
-        adapter = NotesAdapter(noteList, this)
+        adapter = NotesAdapter(noteList, this, this)
         val recyclerView = findViewById<RecyclerView>(R.id.notes_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -47,6 +48,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        deleteNote()
+        return true
+    }
+
     private fun openNote(index: Int) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra(NoteActivity.EXTRA_NOTE, noteList[index])
@@ -56,6 +62,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun addNote() {
         val intent = Intent(this, CreateOrEditActivity::class.java)
         startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
+    }
+
+    private fun deleteNote(){
+        val builder = AlertDialog.Builder(this)
+
+        builder.setMessage(getString(R.string.deleteNoteValidation))
+
+        builder.setPositiveButton(getString(R.string.yes)){ _, _ ->
+            //TODO
+        }
+
+        builder.setNegativeButton(getString(R.string.no)){ _, _ ->
+        }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
     }
 
     private fun goToAbout(){

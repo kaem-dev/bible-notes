@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.item_note.view.*
 
 class NotesAdapter(
     private val noteList: List<Note>,
-    private val itemClickListener: View.OnClickListener?
+    private val itemClickListener: View.OnClickListener?,
+    private val itemLongClickListener: View.OnLongClickListener?
 ) : RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,6 +32,7 @@ class NotesAdapter(
         with(holder.mCardView) {
             tag = position
             setOnClickListener(itemClickListener)
+            setOnLongClickListener(itemLongClickListener)
         }
     }
 
