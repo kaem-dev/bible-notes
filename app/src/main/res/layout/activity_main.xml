@@ -17,6 +17,7 @@
             app:layoutManager="LinearLayoutManager"
             tools:context=".ui.MainActivity"
             tools:listitem="@layout/item_note"/>
+    
 
 
     <android.support.design.widget.FloatingActionButton

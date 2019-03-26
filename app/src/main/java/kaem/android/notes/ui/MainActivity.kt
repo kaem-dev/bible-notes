@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kaem.android.notes.R
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
 
     override fun onClick(v: View?) {
         if (v?.tag != null) {
-            openNote(v.tag as Int)
+            openNote(v.tag as Note)
         } else {
             when (v?.id) {
                 R.id.create_note_button -> addNote()
@@ -49,13 +48,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
     }
 
     override fun onLongClick(v: View?): Boolean {
-        deleteNote()
+        if (v?.tag != null) {
+            val note = v.tag as Note
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(getString(R.string.deleteNoteValidation))
+            builder.setPositiveButton(getString(R.string.yes)){ _, _ ->
+                deleteNote(note.id)
+            }
+            builder.setNegativeButton(getString(R.string.no)){ _, _ ->
+            }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
         return true
     }
 
-    private fun openNote(index: Int) {
+    private fun openNote(note: Note) {
         val intent = Intent(this, NoteActivity::class.java)
-        intent.putExtra(NoteActivity.EXTRA_NOTE, noteList[index])
+        intent.putExtra(NoteActivity.EXTRA_NOTE, note)
         startActivityForResult(intent, NoteActivity.REQUEST_NOTE)
     }
 
@@ -64,21 +74,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         startActivityForResult(intent, CreateOrEditActivity.REQUEST_EDIT_NOTE)
     }
 
-    private fun deleteNote(){
-        val builder = AlertDialog.Builder(this)
-
-        builder.setMessage(getString(R.string.deleteNoteValidation))
-
-        builder.setPositiveButton(getString(R.string.yes)){ _, _ ->
-            //TODO
+    private fun deleteNote(id : Int){
+        if(id >= 0){
+            dbHandler?.deleteNote(id)
+            Toast.makeText(this,  getString(R.string.noteDeleted), Toast.LENGTH_SHORT).show()
+            updateList()
         }
 
-        builder.setNegativeButton(getString(R.string.no)){ _, _ ->
-        }
-
-        val dialog: AlertDialog = builder.create()
-
-        dialog.show()
     }
 
     private fun goToAbout(){
@@ -93,7 +95,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         }
         when(resultCode){
             NoteActivity.UPDATE_CODE -> {
-                Log.i("TEST", "ça passe ici")
                 updateList()
             }
             CreateOrEditActivity.SAVE_CODE -> {
@@ -111,11 +112,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
             }
             CreateOrEditActivity.DELETE_CODE ->{
                 val id = data.getIntExtra(CreateOrEditActivity.EXTRA_ID, -1)
-                if(id >= 0){
-                    dbHandler?.deleteNote(id)
-                    Toast.makeText(this,  getString(R.string.noteDeleted), Toast.LENGTH_SHORT).show()
-                    updateList()
-                }
+                deleteNote(id)
             }
         }
     }

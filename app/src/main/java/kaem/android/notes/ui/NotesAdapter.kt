@@ -30,7 +30,7 @@ class NotesAdapter(
         holder.mDateView.text = item.date
 
         with(holder.mCardView) {
-            tag = position
+            tag = item
             setOnClickListener(itemClickListener)
             setOnLongClickListener(itemLongClickListener)
         }
