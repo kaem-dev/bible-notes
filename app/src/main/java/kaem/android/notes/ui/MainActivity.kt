@@ -2,12 +2,18 @@ package kaem.android.notes.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.button.MaterialButton
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import kaem.android.notes.R
 import kaem.android.notes.model.Note
@@ -23,6 +29,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
+        setSupportActionBar(toolbar)
+
         dbHandler = NotesDataBaseHelper(this)
 
         noteList = dbHandler!!.getAllNotes()
@@ -32,8 +41,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        findViewById<FloatingActionButton>(R.id.create_note_button).setOnClickListener(this)
-        findViewById<FloatingActionButton>(R.id.about_button).setOnClickListener(this)
+        findViewById<Button>(R.id.create_note_button).setOnClickListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.item_about -> {
+                goToAbout()
+                return true
+            }
+        }
+        return  super.onOptionsItemSelected(item)
     }
 
     override fun onClick(v: View?) {
@@ -42,7 +65,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnLongClick
         } else {
             when (v?.id) {
                 R.id.create_note_button -> addNote()
-                R.id.about_button -> goToAbout()
             }
         }
     }
